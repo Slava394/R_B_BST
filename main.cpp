@@ -1,31 +1,33 @@
 #include <iostream>
+#include <random>
+#include <chrono>
 #include "src/RedBlackTree.h"
+#define NUMBER 40000
 
-
-std::ostream& operator<<(std::ostream& out, const Color& color)
-{
-    switch (color)
-    {
-        case Color::RED:
-            out << "RED";
-            break;
-        case Color::BLACK:
-            out << "BLACK";
-            break;
-    }
-    return out;
-}
 
 int main()
 {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution distrib(-10000000, 10000000);
     RedBlackTree<long, long> rbt;
-    for (long index{0}; index < 10000000; index++)
+    for (long index{0}; index < NUMBER; ++index)
     {
-        rbt.insertElement(index + 1, 2 * index);
+        rbt.insertElement(1 + index, 0);
     }
-    for (long index{0}; index < 10000000; index++)
+    // rbt.printTree();
+    std::cout << rbt.getBlackHeight() << std::endl;
+    const auto start = std::chrono::high_resolution_clock::now();
+    for (long index{NUMBER - 1}; index >=
+        0 ; --index)
     {
-        rbt.searchElement(index + 1);
+        rbt.deleteElement(1 + index);
+        if (rbt.getBlackHeight() == -1) throw;
     }
+    const auto end = std::chrono::high_resolution_clock::now();
+    // rbt.printTree();
+    std::cout << rbt.getBlackHeight() << std::endl;
+    const std::chrono::duration<double> elapsed = end - start;
+    std::cout << elapsed / NUMBER << std::endl;
     return 0;
 }

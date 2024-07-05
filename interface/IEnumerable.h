@@ -7,4 +7,5 @@ class IEnumerable
 {
 public:
     virtual IEnumerator<T> GetEnumerator() = 0;
+    virtual ~IEnumerable() = default;
 };

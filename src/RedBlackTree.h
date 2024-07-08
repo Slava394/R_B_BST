@@ -16,13 +16,14 @@ public:
     T key;
     K data;
     Color color;
-    Node *left, *right;
+    Node *left, *right, *parent;
     explicit Node(const T &key,
                   const K &data,
-                  Color color,
+                  const Color color,
                   Node *left = nullptr,
-                  Node *right = nullptr)
-        : key(key), data(data), color(color), left(left), right(right) {}
+                  Node *right = nullptr,
+                  Node *parent = nullptr)
+        : key(key), data(data), color(color), left(left), right(right), parent(parent) {}
 };
 
 

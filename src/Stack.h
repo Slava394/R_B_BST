@@ -6,32 +6,36 @@ template <typename T>
 class Stack
 {
 private:
-    //inner struct
-    struct StackItem
+    T* data;
+    size_t capacity;
+    size_t size;
+
+    void resize(const size_t newCapacity)
     {
-        StackItem *next;
-        T data;
-        StackItem(StackItem *next, const T &data) : next(next), data(data) {}
-    };
-    //head of the stack
-    StackItem *head;
+        T* newData = new T[newCapacity];
+        for (size_t index{0}; index < size; ++index)
+        {
+            newData[index] = data[index];
+        }
+        delete[] data;
+        data = newData;
+        capacity = newCapacity;
+    }
 public:
-    Stack() : head(nullptr) {}
+    Stack() : data(nullptr), capacity(0), size(0) {}
 
     ~Stack()
     {
-        StackItem *deletingNode = head;
-        while (head != nullptr)
-        {
-            deletingNode = head;
-            head = head->next;
-            delete deletingNode;
-        }
+        delete[] data;
     }
 
-    void push(const T &element)
+    void push(const T& element)
     {
-        head = new StackItem(head, element);
+        if (size == capacity)
+        {
+            resize(capacity == 0 ? 1 : capacity * 2);
+        }
+        data[size++] = element;
     }
 
     T pop()
@@ -40,11 +44,7 @@ public:
         {
             throw std::logic_error("Stack is empty");
         }
-        T data = head->data;
-        StackItem *deletingNode = head;
-        head = head->next;
-        delete deletingNode;
-        return data;
+        return data[--size];
     }
 
     T top()
@@ -53,11 +53,11 @@ public:
         {
             throw std::logic_error("Stack is empty");
         }
-        return head->data;
+        return data[size - 1];
     }
 
-    bool empty()
+    [[nodiscard]] bool empty() const
     {
-        return (head == nullptr);
+        return size == 0;
     }
 };

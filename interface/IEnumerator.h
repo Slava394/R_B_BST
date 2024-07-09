@@ -1,9 +1,10 @@
 #pragma once
 
 
-template <typename T>
 class IEnumerator
 {
 public:
-
+    virtual IEnumerator& operator++() = 0;
+    virtual IEnumerator* operator++(int) = 0;
+    virtual ~IEnumerator() = default;
 };

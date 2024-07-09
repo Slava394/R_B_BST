@@ -4,9 +4,10 @@ project(red_black_tree)
 set(CMAKE_CXX_STANDARD 23)
 
 add_executable(red_black_tree main.cpp
-        interface/ICollection.h
         interface/IEnumerable.h
         interface/IEnumerator.h
-        src/TreeEnumerator.h
+        src/TreeIterator.h
         src/RedBlackTree.h
-        src/Stack.h)
+        src/Stack.h
+        test/RedBlackTreeTest.cpp
+        test/RedBlackTreeTest.h)

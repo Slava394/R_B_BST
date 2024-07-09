@@ -2,10 +2,10 @@
 #include "IEnumerator.h"
 
 
-template <typename T>
 class IEnumerable
 {
 public:
-    virtual IEnumerator<T> GetEnumerator() = 0;
+    virtual IEnumerator* begin() = 0;
+    virtual IEnumerator* end() = 0;
     virtual ~IEnumerable() = default;
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <cmath>
 #include "RedBlackTree.h"
 #include "../lab2/ArraySequence.h"
 

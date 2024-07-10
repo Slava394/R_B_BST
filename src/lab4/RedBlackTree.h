@@ -557,7 +557,7 @@ private:
     }
     //for pretty number output
     void fillLevels(MutableArraySequence<MutableArraySequence<TreeNode*>*> &levels)
-    {   //non-recursion fill sequense of sequence pointe holding node pointer
+    {
         levels.Append(new MutableArraySequence<TreeNode*>());
         levels[0]->Append(root);
         int currentLevel = 0;
@@ -594,6 +594,7 @@ private:
     [[nodiscard]] static int getNumberWidth(K number)
     {   //get number width
         int width = 0;
+        if (number < 0) ++width;
         while (number != 0)
         {
             number /= 10;

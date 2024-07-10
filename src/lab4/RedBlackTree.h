@@ -64,7 +64,7 @@ private:
 
         bool operator!=(const TreeIterator &other) const
         {
-            return !(current == other.current);
+            return current != other.current;
         }
 
         TreeIterator& operator++()
@@ -109,6 +109,10 @@ private:
     TreeNode *root;
     TreeNode *nullLeaf;
     std::function<int(const T&, const T&)> comparator;
+    //friend function for output
+    friend void beautifulPrintTree(RedBlackTree<long> *rbt);
+    friend void fillLevels(MutableArraySequence<MutableArraySequence<TreeNode*>*> &levels,
+                           RedBlackTree<long> *rbt);
     //check color of the node
     bool isRed(TreeNode *node) const
     {
@@ -149,7 +153,6 @@ private:
         int rightBlackHeight = checkBlackHeight(node->right);
         if (leftBlackHeight == 0 || rightBlackHeight == 0 || leftBlackHeight != rightBlackHeight)
         {
-            //std::cerr << "Black height violation at node with key " << node->key << std::endl;
             return 0;
         }
         return leftBlackHeight + (node->color == Color::BLACK ? 1 : 0);
@@ -422,7 +425,7 @@ private:
         secondNode->color = tempColor;
     }
     //get the most left node
-    TreeNode* getMostLeftNode(TreeNode *node)//for iterator
+    TreeNode* getMostLeftNode(TreeNode *node) const//for iterator
     {
         if (node == nullLeaf)
         {
@@ -523,7 +526,7 @@ private:
             compareTrees(node1->right, node2->right, secondTreeNullLeaf);
     }
     //extract help function
-    void extractSubtreeHelper(TreeNode *node, RedBlackTree *result)
+    void extractSubtreeHelper(TreeNode *node, RedBlackTree *result) const
     {
         if (node != nullLeaf)
         {
@@ -555,55 +558,6 @@ private:
             reduceHelper(node->right, result, function);
         }
     }
-    //for pretty number output
-    void fillLevels(MutableArraySequence<MutableArraySequence<TreeNode*>*> &levels)
-    {
-        levels.Append(new MutableArraySequence<TreeNode*>());
-        levels[0]->Append(root);
-        int currentLevel = 0;
-        while (currentLevel < levels.GetLength()) {
-            MutableArraySequence<TreeNode*> *current = levels[currentLevel];
-            auto *nextLevel = new MutableArraySequence<TreeNode*>();
-            bool hasValidNode = false;
-            for (int index{0}; index < current->GetLength(); ++index)
-            {
-                TreeNode *node = current->Get(index);
-                if (node != nullLeaf)
-                {
-                    hasValidNode = true;
-                    nextLevel->Append(node->left);
-                    nextLevel->Append(node->right);
-                }
-                else
-                {
-                    nextLevel->Append(nullLeaf);
-                    nextLevel->Append(nullLeaf);
-                }
-            }
-            if (!hasValidNode)
-            {
-                delete nextLevel;
-                break;
-            }
-            levels.Append(nextLevel);
-            ++currentLevel;
-        }
-    }
-    //get number length
-    template <typename K>
-    [[nodiscard]] static int getNumberWidth(K number)
-    {   //get number width
-        int width = 0;
-        if (number < 0) ++width;
-        while (number != 0)
-        {
-            number /= 10;
-            width++;
-        }
-        return width;
-    }
-    //print help function
-    void printHelper(TreeNode *node, std::string indent, bool last) const;
 public:
     //constructor need a comparator for the key type
     explicit RedBlackTree(std::function<int(const T&,const T&)> comparator)
@@ -801,7 +755,7 @@ public:
         delete currentNode;
     }
     //subtree search
-    TreeNode* searchSubtree(RedBlackTree *otherRbt)
+    TreeNode* searchSubtree(RedBlackTree *otherRbt) const
     {
         TreeNode *target = searchElement(otherRbt->root->key);
         if (target == nullptr) return nullptr;
@@ -809,7 +763,7 @@ public:
             searchElement(otherRbt->root->key) : nullptr);
     }
     //subtree extraction
-    RedBlackTree* extractSubtree(const T &key)
+    RedBlackTree* extractSubtree(const T &key) const
     {
         TreeNode *target = searchElement(key);
         auto *result = new RedBlackTree(comparator);
@@ -824,14 +778,14 @@ public:
         return this;
     }
     //where
-    RedBlackTree* where(std::function<bool(T&)> predicate)
+    RedBlackTree* where(std::function<bool(T&)> predicate) const
     {
         auto *result = new RedBlackTree(comparator);
         whereHelper(root, predicate, result);
         return result;
     }
     //reduce
-    T reduce(const T &initialValue, std::function<T(const T&, const T&)> function)
+    T reduce(const T &initialValue, std::function<T(const T&, const T&)> function) const
     {
         T result = initialValue;
         reduceHelper(root, result, function);
@@ -847,13 +801,13 @@ public:
     {
         return checkRedProperties(root);
     }
-    //in-oreder iterator - begin
-    TreeIterator begin()
+    //in-order iterator - begin
+    TreeIterator begin() const
     {
         return TreeIterator(root, nullLeaf);
     }
-    //in-oreder iterator - end (nullLeaf)
-    TreeIterator end()
+    //in-order iterator - end (nullLeaf)
+    TreeIterator end() const
     {
         return TreeIterator(nullLeaf, nullLeaf);
     }
@@ -863,14 +817,4 @@ public:
         deleteNode(root);
         root = nullLeaf;
     }
-    //tree print (as a tree)
-    void printTree() const
-    {
-        if (root)
-        {
-            printHelper(root, "", true);
-        }
-    }
-    //beautiful tree print but only for number (0> and <1000 or break smth)
-    void beautifulPrintTree();
 };

@@ -53,7 +53,7 @@ void print(const NamedTree *namedTree)
 void beautyPrint(const NamedTree *namedTree)
 {
     std::cout << namedTree->name << ":" << std::endl;
-    namedTree->tree->beautifulPrintTree();
+    beautifulPrintTree(namedTree->tree);
 }
 //create a named tree
 void createTree(MutableArraySequence<NamedTree*> &trees, std::istringstream &stringStream)
@@ -397,7 +397,7 @@ void CLI()
 {
     MutableArraySequence<NamedTree*> trees;
     std::string line, command, name;
-    std::cout << "Sequence CLI\nType \"help\" for more information.\n";
+    std::cout << "Red black tree CLI\nType \"help\" for more information.\n";
     while (true)
     {
         line.clear();
